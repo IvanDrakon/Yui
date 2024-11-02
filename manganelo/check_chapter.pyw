@@ -22,15 +22,19 @@ id_list = [link["chat_id"] for link in archive_list]
 link_list = [link["manga"] for link in archive_list]
 chapter = [status.search_ep() for status in search_list]
 i = -1
+no_new_chapter = 0
 for link in chapter:
     i += 1
+    user = id_list[i]
     if link["is_new"]:
-        user = id_list[i]
         message = (f"There's a new chapter: {link['chapter_num']} "
                    f"named: {link['chapter_name']}, link: {link_list[chapter.index(link)]}")
         telegram_bot_send_text(bot_message=message, chat_id=user.strip())
         print(message, user)
     else:
         print("There is no new chapter")
+        no_new_chapter += 1
+        if no_new_chapter == len(chapter):
+            telegram_bot_send_text(bot_message="There's no new chapter today", chat_id=user.strip())
 for search in search_list:
     search.close_tabs()
