@@ -1,7 +1,7 @@
 from found import SendBot
 from search import Search
 import requests
-from Yui.key import telegram_token
+from key import telegram_token
 
 TOKEN = telegram_token
 

@@ -26,17 +26,17 @@ class Search:
             print("Cap error: Chapter number NaN")
             chap_number = 0
         try:
-            with open(f"mangas\{title.text}-data.txt", "r") as f:
+            with open(f"mangas/{title.text}-data.txt", "r") as f:
                 chapter = float(f.readline())
                 print("Opening file")
         except FileNotFoundError:
-            with open(f"mangas\{title.text}-data.txt", "w") as f:
+            with open(f"mangas/{title.text}-data.txt", "w") as f:
                 f.write(f"{chap_number}")
                 print("create file")
                 chapter = chap_number
         else:
             if chap_number > chapter:
-                with open(f"mangas\{title.text}-data.txt", "w") as f:
+                with open(f"mangas/{title.text}-data.txt", "w") as f:
                     f.write(f"{chap_number}")
         finally:
             if chap_number > chapter:
