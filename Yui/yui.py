@@ -1,3 +1,4 @@
+import os
 from typing import Final
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
@@ -8,6 +9,8 @@ import pygetwindow as gw
 import time
 from key import telegram_token
 from weather import take_weather, rain
+from time import sleep
+from modelCatDog import model_predict
 
 TOKEN: Final = telegram_token
 BOT_USERNAME: Final = "@Yui_D08_bot"
@@ -57,6 +60,8 @@ def handle_response(text: str) -> str:
         return 'You will receive updates from Manganelo until the site bug for some reason'
     elif 'oi' in processed:
         return 'Oi'
+    elif 'cu' in processed:
+        return 'Cu'
     elif 'how are you' in processed:
         return 'I am good'
     elif "print" in processed or 'show print' in processed:
@@ -109,6 +114,20 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(response)
 
 
+async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    img_path = f'images/img.jpg'
+    await (await context.bot.getFile(update.message.photo[-1].file_id)).download_to_drive(img_path)
+    sleep(5)
+    print('Photo saved')
+    cat, dog = model_predict(img_path)
+    print(f"Cat = {cat} | Dog = {dog}")
+    if cat > dog:
+        animal = "Gato"
+    else:
+        animal = "Cachorro"
+    await update.message.reply_text(f"Eu acredito que seja um {animal}")
+
+
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f"Update {update} caused error {context.error}")
 
@@ -127,6 +146,7 @@ if __name__ == '__main__':
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
+    app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
 
     # Errors
     app.add_error_handler(error)
